@@ -17,7 +17,7 @@ export const Navbar = () => {
                 >
 
                 </i>
-                &nbsp; 
+                &nbsp;
                 <span>Salir</span>
             </button>
 
