@@ -6,6 +6,7 @@ import { addHours } from 'date-fns'
 import { getMessages, localizer } from '../../helpers'
 import { useState } from 'react'
 import { useUiStore } from '../../hooks/useUiStore'
+import { useCalendarStore } from '../../hooks/useCalendarStore'
 
 
 
@@ -25,6 +26,7 @@ const eventStyleGetter = (event, star, end, isSelected) => {
 export const CalendarPage = () => {
 
   const {openDateModal} = useUiStore()
+  const {events} = useCalendarStore()
 
   const [view, setView] = useState(localStorage.getItem('lastView') || 'week')
 
