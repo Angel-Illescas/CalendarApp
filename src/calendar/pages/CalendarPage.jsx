@@ -8,12 +8,7 @@ import { useState } from 'react'
 import { useUiStore } from '../../hooks/useUiStore'
 
 
-const events = [{
-  title: "Cumpleaños del jefe",
-  notes: "Hay que comprar el pastel",
-  start: new Date(),
-  end: addHours(new Date(), 2),
-}]
+
 
 const eventStyleGetter = (event, star, end, isSelected) => {
   const style = {
