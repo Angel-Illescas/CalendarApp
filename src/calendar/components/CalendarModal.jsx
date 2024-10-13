@@ -4,18 +4,18 @@ import es from 'date-fns/locale/es'
 import DatePicker, { registerLocale } from "react-datepicker";
 import { useMemo, useState } from 'react';
 import { addHours, differenceInSeconds } from 'date-fns';
-
 import "react-datepicker/dist/react-datepicker.css";
 import 'sweetalert2/dist/sweetalert2.min.css'
+import { useUiStore } from '../../hooks/useUiStore';
 
 
 registerLocale('es', es)
 
 export const CalendarModal = () => {
 
-    const [ isOpen, setIsOpen ] = useState(true)
+    const { isDateModalOpen, closeDateModal} = useUiStore()
     const [ formSubmitted , setFormSubmitted ] = useState(false)
-
+    
     const [formValue, setFormValue] = useState({
         title: "Angelus",
         notes: "Illescas",
@@ -79,14 +79,14 @@ export const CalendarModal = () => {
 
     const onCloseModal = () => {
         console.log('cerrando modal');
-        setIsOpen(false)
+        closeDateModal()
     }
 
 
 
     return (
         <Modal
-            isOpen={isOpen}
+            isOpen={isDateModalOpen}
             onRequestClose={onCloseModal}
             style={customStyles}
             contentLabel="Example Modal"

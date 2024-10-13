@@ -5,6 +5,7 @@ import { Calendar } from 'react-big-calendar'
 import { addHours } from 'date-fns'
 import { getMessages, localizer } from '../../helpers'
 import { useState } from 'react'
+import { useUiStore } from '../../hooks/useUiStore'
 
 
 const events = [{
@@ -15,33 +16,34 @@ const events = [{
 }]
 
 const eventStyleGetter = (event, star, end, isSelected) => {
-
   const style = {
     backgroundColor: "black",
     borderRadius: "0px",
     opacity: 0.8,
     color: "red"
   }
-
-
-
   return { style }
 }
 
-const handleOnDoubleClick = (event) => {
-  console.log({ doubleClick: event });
-}
-const handleOnSelect = (event) => {
-  console.log({ click: event });
-}
-const handleOnViewChange = (event) => {
-  console.log({ viewChange: event });
-  localStorage.setItem('lastView', event)
-}
+
+
 export const CalendarPage = () => {
+
+  const {openDateModal} = useUiStore()
 
   const [view, setView] = useState(localStorage.getItem('lastView') || 'week')
 
+  const handleOnDoubleClick = (event) => {
+    console.log({ doubleClick: event });
+    openDateModal()
+  }
+  const handleOnSelect = (event) => {
+    console.log({ click: event });
+  }
+  const handleOnViewChange = (event) => {
+    console.log({ viewChange: event });
+    localStorage.setItem('lastView', event)
+  }
 
   return (
     <>
