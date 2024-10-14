@@ -1,4 +1,4 @@
-import { CalendarEventBox, CalendarModal, Navbar } from '../'
+import { CalendarEventBox, CalendarModal, FabAddNew, Navbar } from '../'
 import 'react-big-calendar/lib/css/react-big-calendar.css'
 
 import { Calendar } from 'react-big-calendar'
@@ -12,10 +12,10 @@ import { useCalendarStore } from '../../hooks/useCalendarStore'
 
 const eventStyleGetter = (event, star, end, isSelected) => {
   const style = {
-    backgroundColor: "black",
+    backgroundColor: "blueviolet",
     borderRadius: "0px",
     opacity: 0.8,
-    color: "red"
+    color: "white"
   }
   return { style }
 }
@@ -64,6 +64,7 @@ export const CalendarPage = () => {
         onView={handleOnViewChange}
       />
       <CalendarModal />
+      <FabAddNew/>
     </>
   )
 }
