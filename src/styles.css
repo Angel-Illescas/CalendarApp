@@ -54,3 +54,14 @@
     background-color: rgb(69, 4, 72);
     color: rgb(255, 255, 255);
 }
+
+.fab-danger{
+    width: 50px;
+    height: 50px;
+    border-radius:100% ;
+    bottom: 25px;
+    position: fixed;
+    left: 25px;
+    background-color: rgb(235, 24, 24);
+    color: blanchedalmond;
+}
