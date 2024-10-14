@@ -1,8 +1,11 @@
 import React from 'react'
 
 export const CalendarEventBox = ({event}) => {
-    const {title,user} = event
+    const {title, user} = event
   return (
-    <div>CalendarEventBox</div>
+    <>
+    <b>{title}</b>
+    <p>by: {user.name}</p>
+    </>
   )
 }

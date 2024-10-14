@@ -2,23 +2,25 @@ import Swal from 'sweetalert2';
 import Modal from 'react-modal'
 import es from 'date-fns/locale/es'
 import DatePicker, { registerLocale } from "react-datepicker";
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { addHours, differenceInSeconds } from 'date-fns';
 import "react-datepicker/dist/react-datepicker.css";
 import 'sweetalert2/dist/sweetalert2.min.css'
 import { useUiStore } from '../../hooks/useUiStore';
+import { useCalendarStore } from '../../hooks/useCalendarStore';
 
 
 registerLocale('es', es)
 
 export const CalendarModal = () => {
 
-    const { isDateModalOpen, closeDateModal} = useUiStore()
-    const [ formSubmitted , setFormSubmitted ] = useState(false)
-    
+    const { isDateModalOpen, closeDateModal } = useUiStore()
+    const [formSubmitted, setFormSubmitted] = useState(false)
+    const { activeEvent } = useCalendarStore()
+
     const [formValue, setFormValue] = useState({
-        title: "Angelus",
-        notes: "Illescas",
+        title: "",
+        notes: "",
         start: new Date(),
         end: addHours(new Date(), 2),
     })
@@ -41,28 +43,28 @@ export const CalendarModal = () => {
         event.preventDefault()
         setFormSubmitted(true)
         const difference = differenceInSeconds(formValue.end, formValue.start)
-        console.log(difference);
 
-        if ( isNaN( difference ) || difference <=0 ){
-            Swal.fire('Fechas incorrectas','Revisar las fechas ingresadas','error')
-            console.log('Error de fechas');
-            return 
+        if (isNaN(difference) || difference <= 0) {
+            Swal.fire('Fechas incorrectas', 'Revisar las fechas ingresadas', 'error')
+            return
         }
 
-        if ( formValue.title.length <= 0) {  return console.log("no title provide");}
-
-        console.log(formValue);
-
-        // TODO:
-
+        if (formValue.title.length <= 0) { return console.log("no title provide"); }
     }
 
     const titleClass = useMemo(() => {
-        if ( !formSubmitted) return ''
-        return (formValue.title.length>0)
-        ? ''
-        : 'is-invalid'
-    }, [formValue.title,formSubmitted])
+        if (!formSubmitted) return ''
+        return (formValue.title.length > 0)
+            ? ''
+            : 'is-invalid'
+    }, [formValue.title, formSubmitted])
+
+
+    useEffect(() => {
+
+        if (activeEvent != null)
+            setFormValue({ ...activeEvent })
+    }, [activeEvent])
 
     const customStyles = {
         content: {
