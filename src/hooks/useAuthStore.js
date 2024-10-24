@@ -73,10 +73,15 @@ export const useAuthStore = () => {
     }
 
 
+    const startLogout = ()=>{
+        localStorage.clear()
+        dispatch(onLogout())
+    }
+
     return {
         //Props
         status, user, errorMessage,
         //Mehods
-        startLogin, starRegister,cheackAuthToken
+        startLogin, starRegister,cheackAuthToken,startLogout
     }
 }
