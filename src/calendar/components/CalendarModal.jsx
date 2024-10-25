@@ -8,6 +8,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import 'sweetalert2/dist/sweetalert2.min.css'
 import { useUiStore } from '../../hooks/useUiStore';
 import { useCalendarStore } from '../../hooks/useCalendarStore';
+import { useAuthStore } from '../../hooks';
 
 
 registerLocale('es', es)
@@ -16,7 +17,10 @@ export const CalendarModal = () => {
 
     const { isDateModalOpen, closeDateModal } = useUiStore()
     const [formSubmitted, setFormSubmitted] = useState(false)
-    const { activeEvent,starSavingEvent} = useCalendarStore()
+    const { activeEvent, starSavingEvent,startDeleteEvent } = useCalendarStore()
+    const {user} = useAuthStore()
+
+    const isMyEvent = (activeEvent?.user._id === user.uid )
 
     const [formValue, setFormValue] = useState({
         title: "",
@@ -39,7 +43,7 @@ export const CalendarModal = () => {
         })
     }
 
-    const HandleOnSubmit = async(event) => {
+    const HandleOnSubmit = async (event) => {
         event.preventDefault()
         setFormSubmitted(true)
         const difference = differenceInSeconds(formValue.end, formValue.start)
@@ -54,6 +58,12 @@ export const CalendarModal = () => {
         await starSavingEvent(formValue)
         closeDateModal()
         setFormSubmitted(false)
+    }
+
+    const handleClickDelete = (event) => {
+        event.preventDefault()
+        startDeleteEvent(activeEvent)
+        closeDateModal()
     }
 
     const titleClass = useMemo(() => {
@@ -100,9 +110,9 @@ export const CalendarModal = () => {
             overlayClassName="modal-fondo"
             closeTimeoutMS={200}
         >
-            <h1> Nuevo evento </h1>
+            <h1> Evento </h1>
             <hr />
-            <form className="container" onSubmit={HandleOnSubmit}>
+            <form className="container" >
 
                 <div className="form-group mb-2 row">
                     <label>Fecha y hora inicio</label>
@@ -163,14 +173,18 @@ export const CalendarModal = () => {
                     <small id="emailHelp" className="form-text text-muted">Información adicional</small>
                 </div>
 
-                <button
-                    type="submit"
-                    className="btn btn-outline-primary btn-block"
-                >
-                    <i className="far fa-save"></i>
-                    <span> Guardar</span>
-                </button>
-
+                <div className="d-flex justify-content-between">
+                    <button className="btn btn-danger" onClick={handleClickDelete} style={{ display: isMyEvent? "": "none" }}>
+                        <i className="fas fa-trash-alt"></i>
+                        &nbsp;
+                        <span>Eliminar</span>
+                    </button>
+                    <button onClick={HandleOnSubmit} class="btn btn-outline-primary" style={{ marginRight: 0 } }>
+                        <i className="far fa-save"></i>
+                        &nbsp;
+                        <span>Guardar</span>
+                    </button>
+                </div>
             </form>
         </Modal>
     )

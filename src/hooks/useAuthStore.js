@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from "react-redux"
 import { calendarApi } from "../api"
-import { onChecking, onDeleteMessage, onLogin, onLogout } from "../store"
+import { onChecking, onDeleteMessage, onErrorLogin, onLogin, onLogout, onLogoutCalendar } from "../store"
 
 export const useAuthStore = () => {
 
@@ -18,7 +18,7 @@ export const useAuthStore = () => {
 
 
         } catch (error) {
-            dispatch(onLogout(error.response.data.msg))
+            dispatch(onErrorLogin(error.response.data.msg))
 
             setTimeout(() => {
                 dispatch(onDeleteMessage())
@@ -40,7 +40,7 @@ export const useAuthStore = () => {
 
         } catch (error) {
             
-            dispatch(onLogout(error.response.data.msg))
+            dispatch(onErrorLogin(error.response.data.msg))
 
             setTimeout(() => {
                 dispatch(onDeleteMessage())
@@ -68,14 +68,15 @@ export const useAuthStore = () => {
             
         } catch (error) {
             localStorage.clear()
-            dispatch(onLogout())
+            dispatch(onLogout("Credenciales vencidas, vuelva a iniciar sesión"))
         }
     }
 
 
     const startLogout = ()=>{
-        localStorage.clear()
-        dispatch(onLogout())
+        localStorage.clear();
+        dispatch( onLogoutCalendar() );
+        dispatch( onLogout("Logout Exitoso") );
     }
 
     return {

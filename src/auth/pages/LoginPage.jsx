@@ -24,11 +24,6 @@ const { loginEmail, loginPassword, onInputChange: onLoginInputChange, formState:
 const { registerName, registerEmail,registerPassword,registerPassword2, onInputChange: onRegisterInputChange, formState:registerFormState } = useForm(registerFormFields)
 const {startLogin, starRegister ,errorMessage} = useAuthStore()
 
-useEffect(() => {
-  if(errorMessage !== undefined){
-    Swal.fire("Error de autenticación",errorMessage,'error')
-  }
-}, [errorMessage])
 
 
 const handleOnLoginSubmit = (event) => {
@@ -47,6 +42,14 @@ const handleOnRegisterSubmit = (event) => {
     }
         
 }
+
+
+useEffect(() => {
+    if ( errorMessage === "Logout Exitoso"   ) {
+    }  else if ( errorMessage !== undefined ){
+        Swal.fire('Error en la autenticación', errorMessage, 'error')
+}
+  }, [errorMessage])
 
 
 

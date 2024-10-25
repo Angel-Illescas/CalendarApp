@@ -6,28 +6,35 @@ import { getMessages, localizer } from '../../helpers'
 import { useState } from 'react'
 import { useUiStore } from '../../hooks/useUiStore'
 import { useCalendarStore } from '../../hooks/useCalendarStore'
-
-
-
-
-const eventStyleGetter = (event, star, end, isSelected) => {
-  const style = {
-    backgroundColor: "blueviolet",
-    borderRadius: "0px",
-    opacity: 0.8,
-    color: "white"
-  }
-  return { style }
-}
-
-
+import { useEffect } from 'react'
+import { useAuthStore } from '../../hooks'
 
 export const CalendarPage = () => {
 
-  const {openDateModal} = useUiStore()
-  const {events,setActiveEvent} = useCalendarStore()
+  const { openDateModal } = useUiStore()
+  const { events, setActiveEvent, startLoadingEvents, } = useCalendarStore()
+
+  console.log(events);
 
   const [view, setView] = useState(localStorage.getItem('lastView') || 'week')
+  const { user } = useAuthStore()
+
+  
+
+  const eventStyleGetter = (event, star, end, isSelected) => {
+
+    const isMyEvent = (user.uid === event.user._id) || (user.uid === event.user.uid)
+
+    const style = {
+      backgroundColor: isMyEvent? "blueviolet": "gray",
+      borderRadius: "0px",
+      opacity: 0.8,
+      color: "white"
+    }
+    return { style }
+  }
+
+
 
   const handleOnDoubleClick = (event) => {
     console.log({ doubleClick: event });
@@ -41,6 +48,12 @@ export const CalendarPage = () => {
     console.log({ viewChange: event });
     localStorage.setItem('lastView', event)
   }
+
+  useEffect(() => {
+    startLoadingEvents()
+  }, [])
+
+
 
   return (
     <>
@@ -64,8 +77,8 @@ export const CalendarPage = () => {
         onView={handleOnViewChange}
       />
       <CalendarModal />
-      <FabAddNew/>
-      <FabDelete/>
+      <FabAddNew />
+      {/* <FabDelete /> */}
     </>
   )
 }
