@@ -17,10 +17,8 @@ export const CalendarModal = () => {
 
     const { isDateModalOpen, closeDateModal } = useUiStore()
     const [formSubmitted, setFormSubmitted] = useState(false)
-    const { activeEvent, starSavingEvent,startDeleteEvent } = useCalendarStore()
-    const {user} = useAuthStore()
-
-    const isMyEvent = (activeEvent?.user._id === user.uid )
+    const { activeEvent, starSavingEvent, startDeleteEvent, isNewNote } = useCalendarStore()
+    const { user } = useAuthStore()
 
     const [formValue, setFormValue] = useState({
         title: "",
@@ -56,8 +54,9 @@ export const CalendarModal = () => {
         if (formValue.title.length <= 0) { return console.log("no title provide"); }
 
         await starSavingEvent(formValue)
-        closeDateModal()
         setFormSubmitted(false)
+        closeDateModal()
+
     }
 
     const handleClickDelete = (event) => {
@@ -73,12 +72,12 @@ export const CalendarModal = () => {
             : 'is-invalid'
     }, [formValue.title, formSubmitted])
 
-
     useEffect(() => {
 
         if (activeEvent != null)
             setFormValue({ ...activeEvent })
     }, [activeEvent])
+
 
     const customStyles = {
         content: {
@@ -94,8 +93,27 @@ export const CalendarModal = () => {
     Modal.setAppElement('#root');
 
     const onCloseModal = () => {
-        console.log('cerrando modal');
+        // console.log('cerrando modal');
         closeDateModal()
+    }
+
+    const isMyEvent = (activeEvent?.user._id === user?.uid || activeEvent?.user.uid === user?.uid)
+
+    const isDisabled = () => {
+        if (activeEvent?.user._id === user?.uid || activeEvent?.user.uid === user?.uid) {
+            return false
+        } else { return true }
+    }
+
+    const showDeleteIcon = () => {
+        if (isNewNote == true) {
+            return false
+        } else if (isNewNote == false) {
+            if (activeEvent?.user._id === user?.uid || activeEvent?.user.uid === user?.uid) {
+                return true
+            }
+        }
+
     }
 
 
@@ -113,78 +131,79 @@ export const CalendarModal = () => {
             <h1> Evento </h1>
             <hr />
             <form className="container" >
+                <fieldset disabled={isDisabled()}>
+                    <div className="form-group mb-2 row">
+                        <label>Fecha y hora inicio</label>
+                        <DatePicker
+                            selected={formValue.start}
+                            className='form-control'
+                            onChange={(event) =>
+                                handleOnChangeEvent(event, "start")
+                            }
+                            dateFormat="Pp"
+                            showTimeSelect
+                            locale="es"
+                            timeCaption='Hora'
+                        />
+                    </div>
 
-                <div className="form-group mb-2 row">
-                    <label>Fecha y hora inicio</label>
-                    <DatePicker
-                        selected={formValue.start}
-                        className='form-control'
-                        onChange={(event) =>
-                            handleOnChangeEvent(event, "start")
-                        }
-                        dateFormat="Pp"
-                        showTimeSelect
-                        locale="es"
-                        timeCaption='Hora'
-                    />
-                </div>
+                    <div className="form-group mb-2 row">
+                        <label>Fecha y hora fin</label>
+                        <DatePicker
+                            minDate={formValue.start}
+                            selected={formValue.end}
+                            className='form-control'
+                            onChange={(event) =>
+                                handleOnChangeEvent(event, "end")
+                            }
+                            dateFormat="Pp"
+                            showTimeSelect
+                            locale="es"
+                            timeCaption='Hora'
+                        />
+                    </div>
 
-                <div className="form-group mb-2 row">
-                    <label>Fecha y hora fin</label>
-                    <DatePicker
-                        minDate={formValue.start}
-                        selected={formValue.end}
-                        className='form-control'
-                        onChange={(event) =>
-                            handleOnChangeEvent(event, "end")
-                        }
-                        dateFormat="Pp"
-                        showTimeSelect
-                        locale="es"
-                        timeCaption='Hora'
-                    />
-                </div>
+                    <hr />
+                    <div className="form-group mb-2">
+                        <label>Titulo y notas</label>
+                        <input
+                            type="text"
+                            className={`form-control ${titleClass}`}
+                            placeholder="Título del evento"
+                            name="title"
+                            autoComplete="off"
+                            value={formValue.title}
+                            onChange={handleOnChange}
+                        />
+                        <small id="emailHelp" className="form-text text-muted">Una descripción corta</small>
+                    </div>
 
-                <hr />
-                <div className="form-group mb-2">
-                    <label>Titulo y notas</label>
-                    <input
-                        type="text"
-                        className={`form-control ${titleClass}`}
-                        placeholder="Título del evento"
-                        name="title"
-                        autoComplete="off"
-                        value={formValue.title}
-                        onChange={handleOnChange}
-                    />
-                    <small id="emailHelp" className="form-text text-muted">Una descripción corta</small>
-                </div>
+                    <div className="form-group mb-2">
+                        <textarea
+                            type="text"
+                            className="form-control"
+                            placeholder="Notas"
+                            rows="5"
+                            name="notes"
+                            value={formValue.notes}
+                            onChange={handleOnChange}
+                        ></textarea>
+                        <small id="emailHelp" className="form-text text-muted">Información adicional</small>
+                    </div>
 
-                <div className="form-group mb-2">
-                    <textarea
-                        type="text"
-                        className="form-control"
-                        placeholder="Notas"
-                        rows="5"
-                        name="notes"
-                        value={formValue.notes}
-                        onChange={handleOnChange}
-                    ></textarea>
-                    <small id="emailHelp" className="form-text text-muted">Información adicional</small>
-                </div>
-
-                <div className="d-flex justify-content-between">
-                    <button className="btn btn-danger" onClick={handleClickDelete} style={{ display: isMyEvent? "": "none" }}>
-                        <i className="fas fa-trash-alt"></i>
-                        &nbsp;
-                        <span>Eliminar</span>
-                    </button>
-                    <button onClick={HandleOnSubmit} class="btn btn-outline-primary" style={{ marginRight: 0 } }>
-                        <i className="far fa-save"></i>
-                        &nbsp;
-                        <span>Guardar</span>
-                    </button>
-                </div>
+                    <div className="d-flex justify-content-between">
+                        <button className="btn btn-danger" onClick={handleClickDelete} style={{ display: showDeleteIcon() ? "" : "none" }}>
+                            <i className="fas fa-trash-alt"></i>
+                            &nbsp;
+                            <span>Eliminar</span>
+                        </button>
+                        <button onClick={HandleOnSubmit} class="btn btn-outline-primary" style={{ display: isMyEvent ? "" : "none" }}>
+                            <i className="far fa-save"></i>
+                            &nbsp;
+                            <span>Guardar</span>
+                        </button>
+                    </div>
+                </fieldset>
             </form>
         </Modal>
     )

@@ -5,6 +5,7 @@ import { createSlice } from '@reduxjs/toolkit';
 export const calendarSlice = createSlice({
     name: 'calendar',
     initialState: {
+        isNewNote:false,
         isLoadingEvents: true,
         events: [],
         activeEvent: null,
@@ -12,10 +13,12 @@ export const calendarSlice = createSlice({
     reducers: {
         onSetActiveEvent: (state, { payload }) => {
             state.activeEvent = payload;
+            state.isNewNote = false;
         },
         onAddNewEvent: (state, { payload }) => {
             state.events.push(payload);
-            state.activeEvent = null
+            state.activeEvent = null,
+            state.isNewNote = false
         },
         onUpdateEvent: (state, { payload }) => {
             state.events = state.events.map(event => {
@@ -44,10 +47,13 @@ export const calendarSlice = createSlice({
             state.isLoadingEvents = true,
             state.events      = []
             state.activeEvent = null
+        },
+        onIsNewNote: (state) =>{
+            state.isNewNote = true
         }
     }
 });
 
 
 
-export const { onSetActiveEvent, onAddNewEvent, onUpdateEvent, onDeleteEvent, onLoadingEvent,onLogoutCalendar } = calendarSlice.actions;
+export const { onSetActiveEvent, onAddNewEvent, onUpdateEvent, onDeleteEvent, onLoadingEvent,onLogoutCalendar,onIsNewNote } = calendarSlice.actions;

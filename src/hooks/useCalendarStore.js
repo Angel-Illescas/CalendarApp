@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from "react-redux"
-import { onAddNewEvent, onDeleteEvent, onLoadingEvent, onSetActiveEvent, onUpdateEvent } from "../store/calendar/calendarSlice"
+import { onAddNewEvent, onDeleteEvent, onIsNewNote, onLoadingEvent, onSetActiveEvent, onUpdateEvent } from "../store/calendar/calendarSlice"
 import calendarApi from './../api/calendarApi';
 import { parseDates } from "../helpers/parseDates";
 import Swal from "sweetalert2";
@@ -7,11 +7,15 @@ import Swal from "sweetalert2";
 export const useCalendarStore = () => {
 
   const dispatch = useDispatch()
-  const { events, activeEvent } = useSelector(state => state.calendar)
+  const { events, activeEvent, isNewNote } = useSelector(state => state.calendar)
   const { user } = useSelector(state => state.auth)
 
   const setActiveEvent = (calendarEvent) => {
     dispatch(onSetActiveEvent(calendarEvent))
+  }
+
+  const starSettingNewNote = () => {
+    dispatch(onIsNewNote())
   }
 
   const starSavingEvent = async (calendarEvent) => {
@@ -24,7 +28,7 @@ export const useCalendarStore = () => {
       }
 
       const { data } = await calendarApi.post('/events', calendarEvent)
-      dispatch(onAddNewEvent({ ...calendarEvent, id: data.event.id, user }))
+      dispatch(onAddNewEvent({ ...calendarEvent, id: data.event.id, }))
 
     } catch (error) {
       console.log(error);
@@ -63,6 +67,6 @@ export const useCalendarStore = () => {
 
 
   return {
-    events, setActiveEvent, activeEvent, starSavingEvent, startDeleteEvent, startLoadingEvents, hasEventSelected: !!activeEvent,
+    events, setActiveEvent, activeEvent,isNewNote, starSettingNewNote,starSavingEvent, startDeleteEvent, startLoadingEvents, hasEventSelected: !!activeEvent,
   }
 }
