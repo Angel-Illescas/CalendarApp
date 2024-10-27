@@ -57,7 +57,7 @@ export const LoginPage = () => {
         <div className="container login-container ">
             <div className="row ">
                 <div className="col-md-6 login-form-1 " style={{ display: isLoginPage ? '' : "none" }}>
-                    <img src="../public/images/01.svg" alt="" srcset="" className='img-login' />
+                    <img src="/assets/images/01.svg" alt="" srcset="" className='img-login' />
                     <h3 className='mt-1'>Ingreso</h3>
                     <form className='text-center' onSubmit={handleOnLoginSubmit}>
                         <div className="form-group mb-2">

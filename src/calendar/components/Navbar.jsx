@@ -9,7 +9,7 @@ export const Navbar = () => {
         <div className='navbar navbar-dark mynavbar mb-4 px-4'>
             
             <span className='navbar-brand'>
-                <img src="../public/images/logo-blanco.svg" alt="" className='img-navbar'/>
+                <img src="/assets/images/logo-blanco.svg" alt="" className='img-navbar'/>
                 &nbsp;
                 &nbsp;
                 &nbsp;
